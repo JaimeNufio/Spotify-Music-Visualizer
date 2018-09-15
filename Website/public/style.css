@@ -1,0 +1,117 @@
+html { position: relative; min-height: 100%; }
+
+body {
+  margin-bottom: 100px; /* Margin bottom by footer height */
+  background-color: #27282a;
+  color:#FFF;
+  font-size: 1em;
+}
+
+.footer {
+    height: 100px; 
+    width: 100%; 
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-position: 0% 0%;
+    background-color: #67686a;
+    position: fixed;
+    bottom: 0pt;
+    left: 0pt;
+}
+
+.album-current{
+	overflow: hidden;	
+	height:100px;
+}
+
+.album-cover{
+	/* 640x640, 300x300, 64x64*/
+	height: 100px;
+	width: 100px;
+	float:left;
+	background-color: gray;
+}
+
+.album-name{
+	overflow: hidden;
+	height: 100px;
+	width:25%;
+	float:left;
+}
+
+.album-cover .album-img{
+	height: 100%;
+	width: 100%;
+}
+
+h1{
+	font-size: 2em;
+}
+
+.title{
+	line-height: 1.6em;
+	text-align:center;
+	display: block;
+	background-color: #47484a;
+	border-radius: 25px;
+}
+
+.subdiv{
+	line-height: 1.6em;
+	text-align:center;
+	display: block;
+	background-color: #47484a;
+	border-radius: 25px;
+}
+
+.stat{
+
+}
+
+.stat-description{
+	text-align: left;
+}
+
+.stat-name{
+	text-align: left;
+}
+
+.title p{
+	padding-left:10vw;
+	padding-right:10vw;
+}
+
+.btn {
+	background-color: transparent;
+	border-radius: 2em;
+	border: 0.2em solid #1ecd97;
+	color: #1ecd97;
+	cursor: pointer;
+	font-size: 1.3em;
+	padding: 0.7em 1.5em;
+	text-transform: uppercase;
+	transition: all 0.25s ease;
+}
+
+.btn:hover {
+	background: #1ecd97;
+	color: #333;
+}
+
+.btn-login {
+	display: block;
+	margin:auto;
+  /*margin: 0 auto;*/
+}
+
+#login, #loggedin {
+  	
+}
+
+.text-overflow {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 500px;
+}

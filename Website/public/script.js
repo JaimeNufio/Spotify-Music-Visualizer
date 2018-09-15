@@ -4,6 +4,15 @@
   var Tracks = 1000; //data called from library temporary
   var TracksCollect = [];
   var DumpAttributes = [];
+  var CurrentSong = {};
+
+  var CurrentSongStats = {
+    "uri": "",
+    "coverArt": "",
+    "artistName": "",
+    "SongName": "",
+    "playing":"",
+  };
 
   var averages = {
     "valence":0,
@@ -35,6 +44,9 @@
      // console.log("done with ajax");
   });
 
+
+
+
   /*
    * Generates a random string containing numbers and letters
    * @param  {number} length The length of the string
@@ -54,6 +66,7 @@
     let str = "";
     for (let i=offset; i<offset+100; i++){
       
+
       if (TracksCollect[i]){
         str+=TracksCollect[i]['id'];
       }
@@ -65,7 +78,7 @@
    } 
     return str;
   }
-
+/*
   var userProfileSource = document.getElementById('user-profile-template').innerHTML,
       userProfileTemplate = Handlebars.compile(userProfileSource),
       userProfilePlaceholder = document.getElementById('user-profile');
@@ -74,6 +87,7 @@
       oauthTemplate = Handlebars.compile(oauthSource),
       oauthPlaceholder = document.getElementById('oauth');
 
+*/
   var params = getHashParams();
 
   var access_token = params.access_token,
@@ -91,10 +105,11 @@
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {
-            userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+           // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
 
-      //      $('#login').hide();
-        //    $('#loggedin').show();
+           $('#login').hide();
+          $('#loggedin').show();
+         // $('#foot').show();
           }
       });
       //Establish how many Tracks we need to retrieve
@@ -107,8 +122,9 @@
           success: function(data){Tracks=data['total'];console.log("Tracks:"+Tracks)  } 
         });
     } else {
-      //  $('#login').show();
-       // $('#loggedin').hide();
+        $('#login').show();
+        $('#loggedin').hide();
+        $('#foot').hide();
     }
 
 //Login with Spotify
@@ -120,7 +136,7 @@
     var state = generateRandomString(16);
 
     localStorage.setItem(stateKey, state);
-    var scope ="user-library-read user-read-private user-read-email";
+    var scope ="user-library-read user-read-private user-read-email user-read-currently-playing user-read-playback-state";
 
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
@@ -132,6 +148,45 @@
 
 
   }, false);
+
+    setInterval(function(){ 
+
+    $.ajax({
+          url: 'https://api.spotify.com/v1/me/player/currently-playing',
+          type: 'GET',
+          headers: { 
+            'Authorization' : 'Bearer ' + access_token
+          },
+          success: function(data){
+
+            try{
+              let artist = "";
+
+              for (let i = 0; i<data['item']['artists'].length;i++){
+                artist+=data['item']['artists'][i]['name'];
+                if(i!=data['item']['artists'].length-1){
+                  artist+=",";  
+                }
+              }
+
+              CurrentSongStats['uri'] = data['item']['id'];
+              CurrentSongStats['coverArt'] = data['item']['album']['images'][1]['url'];
+              CurrentSongStats['artistName'] = artist;
+              CurrentSongStats['SongName'] = data['item']['name'];
+              CurrentSongStats['playing'] = (data['is_playing'])&&(data['currently_playing_type']=='track');
+            }catch{
+              CurrentSongStats['playing']=false;
+              CurrentSongStats['coverArt']="";
+              CurrentSongStats['artistName']="";
+              CurrentSongStats['SongName']="";
+              CurrentSongStats['playing']="";
+            }
+  
+            console.log(CurrentSongStats);
+          } 
+        });
+      console.log("f");
+   }, 1500);
 	
 //Collect songs from USER LIBRARY
 //TODO: Write versions for Album, Playlists, and Individual Songs (Next: Current Song)
