@@ -1,12 +1,25 @@
 (function() {
 
+  var loggedin =false;
+
   var stateKey = 'spotify_auth_state';
   var Tracks = 1000; //data called from library temporary
   var TracksCollect = [];
   var DumpAttributes = [];
-  var CurrentSong = {};
 
   var CurrentSongStats = {
+    "valence":0,
+    "instrumentalness":0,
+    "energy":0,
+    "acousticness":0,
+    "loudness":0,
+    "mode":0,
+    "speechiness":0,
+    "tempo":0,
+    "danceability":0,
+  };
+
+  var CurrentSong = {
     "uri": "",
     "coverArt": "",
     "artistName": "",
@@ -25,6 +38,12 @@
     "tempo":0,
     "danceability":0,
   }
+
+  //Parametrisize between colors
+  function paraColor(){
+
+  }
+
 
   /**
    * Obtains parameters from the hash of the URL
@@ -106,10 +125,11 @@
           },
           success: function(response) {
            // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-
-           $('#login').hide();
+          loggedin = true;
+          $('#login').hide();
           $('#loggedin').show();
-         // $('#foot').show();
+          $("#NoMusic").hide();
+          $("#YesMusic").hide();
           }
       });
       //Establish how many Tracks we need to retrieve
@@ -124,7 +144,9 @@
     } else {
         $('#login').show();
         $('#loggedin').hide();
-        $('#foot').hide();
+        $("#foot").hide();
+
+      
     }
 
 //Login with Spotify
@@ -149,44 +171,87 @@
 
   }, false);
 
-    setInterval(function(){ 
-
-    $.ajax({
+    setInterval(function(){ if(loggedin){
+      $.ajax({
           url: 'https://api.spotify.com/v1/me/player/currently-playing',
           type: 'GET',
           headers: { 
             'Authorization' : 'Bearer ' + access_token
           },
           success: function(data){
+            let artist = "";
 
-            try{
-              let artist = "";
+            for (let i = 0; i<data['item']['artists'].length;i++){
 
-              for (let i = 0; i<data['item']['artists'].length;i++){
-                artist+=data['item']['artists'][i]['name'];
-                if(i!=data['item']['artists'].length-1){
-                  artist+=",";  
-                }
+              artist+=data['item']['artists'][i]['name'];
+
+              if(i!=data['item']['artists'].length-1){
+                artist+=",";  
               }
-
-              CurrentSongStats['uri'] = data['item']['id'];
-              CurrentSongStats['coverArt'] = data['item']['album']['images'][1]['url'];
-              CurrentSongStats['artistName'] = artist;
-              CurrentSongStats['SongName'] = data['item']['name'];
-              CurrentSongStats['playing'] = (data['is_playing'])&&(data['currently_playing_type']=='track');
-            }catch{
-              CurrentSongStats['playing']=false;
-              CurrentSongStats['coverArt']="";
-              CurrentSongStats['artistName']="";
-              CurrentSongStats['SongName']="";
-              CurrentSongStats['playing']="";
             }
-  
-            console.log(CurrentSongStats);
+            CurrentSong['uri'] = data['item']['id'];
+            CurrentSong['coverArt'] = data['item']['album']['images'][0]['url'];
+            CurrentSong['artistName'] = artist;
+            CurrentSong['SongName'] = data['item']['name'];
+            CurrentSong['playing'] = (data['is_playing']&&data['currently_playing_type']=='track');
+          },error: function(response){
+            CurrentSong['uri'] = "";
+            CurrentSong['coverArt'] = "";
+            CurrentSong['artistName'] = "";
+            CurrentSong['SongName'] = "";
+            CurrentSong['playing'] = false;
+          },statusCode:{
+            500:function(){
+            //console.log(CurrentSong);
+          }
+        }
+      });
+      ///*
+
+      if (CurrentSong['playing']){
+
+        $("#Title").html(CurrentSong['SongName']);
+        $("#Artist").html(CurrentSong['artistName']);
+        $("#AlbumImage").attr("src",CurrentSong['coverArt']);
+        $("#NoMusic").hide();
+        $("#YesMusic").show();
+
+         $.ajax({
+          url: "https://api.spotify.com/v1/audio-features/"+CurrentSong['uri'],
+          type: 'GET',
+          headers: { 
+            'Authorization' : 'Bearer ' + access_token
+          },
+          success: function(data){
+          //  CurrentSongStats['instrumentalness']=data['instrumentalness'];
+            CurrentSongStats['valence']=data['valence']*1000;
+            CurrentSongStats['speechiness']=data['speechiness']/.5*1000;
+           // CurrentSongStats['loudness']=data['loudness'];
+            CurrentSongStats['danceability']=data['danceability']*1000;
+            CurrentSongStats['energy']=data['energy']*1000;
+            CurrentSongStats['loudness']=((data['loudness']+20)/20)*1000;
+            console.log("Loudness:"+(data['speechiness']));
           } 
         });
-      console.log("f");
-   }, 1500);
+         // console.log(CurrentSongStats)
+        
+      }else{
+        $("#NoMusic").show();
+        $("#YesMusic").hide();
+        CurrentSongStats['valence']=0;
+        CurrentSongStats['speechiness']=0;
+        CurrentSongStats['danceability']=0;
+        CurrentSongStats['energy']=0;
+        CurrentSongStats['loudness']=0;
+      }//*/
+        $('#dance').css('width', CurrentSongStats['danceability']/10+'%').attr('aria-valuenow', CurrentSongStats['danceability']);
+        $('#energy').css('width', CurrentSongStats['energy']/10+'%').attr('aria-valuenow', CurrentSongStats['energy']);
+        $('#valence').css('width', CurrentSongStats['valence']/10+'%').attr('aria-valuenow', CurrentSongStats['valence']);
+        $('#speechiness').css('width', CurrentSongStats['speechiness']/10+'%').attr('aria-valuenow', CurrentSongStats['speechiness']);
+        $('#loud').css('width', CurrentSongStats['loudness']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
+   //  $("#foot").show();
+    //console.log(CurrentSongStats);
+   }}, 1000);
 	
 //Collect songs from USER LIBRARY
 //TODO: Write versions for Album, Playlists, and Individual Songs (Next: Current Song)
