@@ -29,13 +29,23 @@
        <div class="title ml-1 mr-1 mt-3 mb-3 pb-3">
         <h1 class="pt-5 pb-1">Current Track</h1>
 
-        <div id="NoMusic" class="title-light m-4 p-4"><h2>Nothing is playing :( <br><br> Play some music!</h2></div>
+        <div id="NoMusic" class="title-light m-4 p-4"><h2>Open your spotify app and play some music.</h2></div>
 
         <div id="YesMusic" class="">
             <div  class="album-cover"><img id="AlbumImage" class="album-img p-4" src="" alt=""></div>
             <h2 id="Title" class=""></h2>
             <h5 id="Artist" class=""></h5>
         </div>
+
+        <div class="subdiv ml-1 mr-1 pb-5 pt-1">
+          <div class="stat">
+            <h3  class="stat-name pl-5 pt-3">Tempo:</h3>
+            <p class="stat-description pl-5">Beats per minute, aka the songs pace.</p>
+            <div class="progress ml-5 mr-5">
+              <div id="tempo" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%"></div>
+            </div> 
+          </div>
+
 
         <div class="subdiv ml-1 mr-1 pb-5 pt-1">
           <div class="stat">
@@ -65,10 +75,10 @@
           </div>
 
           <div  class="stat">
-            <h3 class="stat-name pl-5 pt-3">Speechiness:</h3>
-            <p class="stat-description pl-5">How much of the track is vocally focused, opposed to musically focused. This value is scaled here to see the values more closely. This value is actually much closer to a binary yes or no. </p>
+            <h3 class="stat-name pl-5 pt-3">Acousticness:</h3>
+            <p class="stat-description pl-5">How much the algorithim believes this track is accoustic. Consequently, a measure of acoustic attributes to the track. A value greater than 50% means the song is most likely accoustic. </p>
             <div class="progress ml-5 mr-5">
-              <div id="speechiness"  class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
+              <div id="acousticness"  class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
               </div>
             </div> 
 

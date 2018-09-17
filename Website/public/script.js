@@ -40,11 +40,44 @@
   }
 
   //Parametrisize between colors
-  function paraColor(){
+  function paraColor(color1,color2,t,max){
+    let R = color1[0];
+    let G = color1[1];
+    let B = color1[2];
+
+    let Rt = (color2[0]-color1[0])/(max);
+    let Gt = (color2[1]-color1[1])/(max);
+    let Bt = (color2[2]-color1[2])/(max);
+
+    return "rgba("+((R+(Rt*t)))+","+((G+(Gt*t)))+","+((B+Bt*t))+",255)";
 
   }
 
+  function moodColor(t,max){
+    let colors=["#6626d5","#2689d5","#27d55e","#f4d442","#f44242"];
+    let num = (t/max)*1000;
 
+    col = colors[0];
+    if (num >250){
+      col = colors[1];
+    }
+    if (num >500){
+      col = colors[2];
+    }
+    if (num >750){
+      col = colors[3];
+    }
+    if (num >850){
+      col = colors[4];
+    }
+    return col;
+  }
+
+/*
+  for(let i =0;i<1000;i+=10){
+  console.log(paraColor([255,0,0],[0,0,255],i,999));
+  }
+*/
   /**
    * Obtains parameters from the hash of the URL
    * @return Object
@@ -63,7 +96,12 @@
      // console.log("done with ajax");
   });
 
-
+  $('#tempo').css('background-color','rgb(64,178,60)');
+  $('#dance').css('background-color','rgb(64,178,60)');
+  $('#energy').css('background-color','rgb(64,178,60)');
+  $('#valence').css('background-color','rgb(64,178,60)');
+  $('#speechiness').css('background-color','rgb(64,178,60)');
+  $('#loud').css('background-color','rgb(64,178,60)');
 
 
   /*
@@ -225,12 +263,13 @@
           success: function(data){
           //  CurrentSongStats['instrumentalness']=data['instrumentalness'];
             CurrentSongStats['valence']=data['valence']*1000;
-            CurrentSongStats['speechiness']=data['speechiness']/.5*1000;
+            CurrentSongStats['acousticness']=data['acousticness']*1000;
            // CurrentSongStats['loudness']=data['loudness'];
             CurrentSongStats['danceability']=data['danceability']*1000;
             CurrentSongStats['energy']=data['energy']*1000;
+            CurrentSongStats['tempo']=(data['tempo']/200)*1000;
             CurrentSongStats['loudness']=((data['loudness']+20)/20)*1000;
-            console.log("Loudness:"+(data['speechiness']));
+           // console.log("Loudness:"+(data['speechiness']));
           } 
         });
          // console.log(CurrentSongStats)
@@ -243,15 +282,24 @@
         CurrentSongStats['danceability']=0;
         CurrentSongStats['energy']=0;
         CurrentSongStats['loudness']=0;
+        CurrentSongStats['acousticness']=0;
+        CurrentSongStats['tempo']=0;
       }//*/
         $('#dance').css('width', CurrentSongStats['danceability']/10+'%').attr('aria-valuenow', CurrentSongStats['danceability']);
+        $('#dance').css('background-color',moodColor(CurrentSongStats['danceability'],1000));
         $('#energy').css('width', CurrentSongStats['energy']/10+'%').attr('aria-valuenow', CurrentSongStats['energy']);
+        $('#energy').css('background-color',moodColor(CurrentSongStats['energy'],1000));
         $('#valence').css('width', CurrentSongStats['valence']/10+'%').attr('aria-valuenow', CurrentSongStats['valence']);
-        $('#speechiness').css('width', CurrentSongStats['speechiness']/10+'%').attr('aria-valuenow', CurrentSongStats['speechiness']);
+        $('#valence').css('background-color',moodColor(CurrentSongStats['valence'],1000));
+        $('#acousticness').css('width', CurrentSongStats['acousticness']/10+'%').attr('aria-valuenow', CurrentSongStats['acousticness']);
+        $('#acousticness').css('background-color',moodColor(CurrentSongStats['acousticness'],1000));
         $('#loud').css('width', CurrentSongStats['loudness']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
+        $('#loud').css('background-color',moodColor(CurrentSongStats['loudness'],1000));
+        $('#tempo').css('width', CurrentSongStats['tempo']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
+        $('#tempo').css('background-color',moodColor(CurrentSongStats['tempo'],1000));
    //  $("#foot").show();
     //console.log(CurrentSongStats);
-   }}, 1000);
+   }}, 900);
 	
 //Collect songs from USER LIBRARY
 //TODO: Write versions for Album, Playlists, and Individual Songs (Next: Current Song)
