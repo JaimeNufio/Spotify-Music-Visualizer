@@ -2,7 +2,7 @@ html { position: relative; min-height: 100%; }
 
 body {
   margin-bottom: 100px; /* Margin bottom by footer height */
-  background-color: #27282a;
+  background-color: #191919;
   color:#FFF;
   font-size: 1em;
   font-family: 'Merriweather', serif;
@@ -10,9 +10,9 @@ body {
 
 #Artist{
 	width: 100%;
-		margin:1vw;
-		display: block;
-			padding: 2vw;
+
+	display: block;
+
 	/*height: 4vw;*/
 	
 }
@@ -20,14 +20,13 @@ body {
 #Title{
 	
 	width: 100%;
-	margin:1vw;
-	padding: 2vw;
-			display: block;
+
+	display: block;
 	/*overflow: wrap;*/
 }
 
 #NoMusic{
-	display: hidden !important;
+	
 }
 
 #YesMusic{
@@ -56,12 +55,18 @@ body {
 
 .album-cover{
 	/* 640x640, 300x300, 64x64*/
-	height: 50vw;
-	width: 50vw;
-	max-height: 500px;
-	max-width: 500px;
+	height: 60vw;
+	width: 60vw;
+	max-height: 350px;
+	max-width: 350px;
+	padding-top: 1vw;
+	padding-bottom: 1vw;
 	display: block !important;
 	margin: auto !important;
+}
+
+.playing{
+	position: fixed;
 }
 
 .album-name{
@@ -75,16 +80,13 @@ body {
 	height: 100%;
 	width: 100%;
 
-
 }
-
-
 
 .title{
 	line-height: 1.6em;
 	text-align:center;
 	display: block;
-	background-color: #47484a;
+	background-color: #27282b;
 	border-radius: 25px;
 }
 
@@ -92,8 +94,10 @@ body {
 	line-height: 1.6em;
 	text-align:center;
 	display: block;
-	background-color: #77787a;
+	background-color: #191919;
 	border-radius: 25px;
+	padding-left:1vw;
+	padding-right: 1vw;
 }
 
 .lead{
@@ -114,6 +118,7 @@ body {
 
 .stat-description{
 	text-align: left;
+	padding-right:0px;
 }
 
 .stat-name{
@@ -157,4 +162,15 @@ body {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	width: 500px;
+}
+
+@media only screen and (min-width: 990px) {
+    /* Larger than mobile */
+    .left{
+    	padding-right:  0 !important;
+    }
+
+    .right{
+    	padding-left: 0 !important;
+    }
 }

@@ -12,9 +12,9 @@
 
       <div id="oauth"></div>
 
-    <main role="main" class="container-fluid pt-3">
+    <main role="main" class="container mt-3">
 
-      <div class="title ml-1 mr-1 pb-3">
+      <div id="welcome" class="title pb-3">
         <h1 class="pt-5 pb-3">Spotify Statistics</h1>
         <p class="lead">Understand the underlying statistics that define how Spotify's algorithims interpret your music, and what they might say about you. Using Spotify's API, we'll average values of your library's music and learn the quantitative aspects of your saved.</p>
 
@@ -25,54 +25,73 @@
         </div>
       </div>
 
-      <div id="loggedin">
-       <div class="title ml-1 mr-1 mt-3 mb-3 pb-3">
-        <h1 class="pt-5 pb-1">Current Track</h1>
+      <div id="loggedin" class ="">
+       <div class="title mt-3 mb-3 pt-3">
+        <div class="">
+          <div class='title-light p-2 m-3'>
+            <h1 class="p-3">Track Attributes</h1>
+          </div>
+        </div>
+     
+      <div class="row mt-0">
+        <div id="NoMusic" class="col col-lg-6 left">
+          <div class="p-2">
+            <div class="title-light playing pb-0 p-3 pl-2 mb-0 m-3">
+            <h2 style="padding-top:1vw">No Music Playing</h2>
+            <div  class="album-cover">
+              <img class="album-img" src="./spotify.png" alt="">
+            </div>
+            <h2 style="padding-top:1vw">Open your Spotify app and play some music.</h2>
+          </div>
+        </div>
+      </div>
 
-        <div id="NoMusic" class="title-light m-4 p-4"><h2>Open your spotify app and play some music.</h2></div>
-
-        <div id="YesMusic" class="">
-            <div  class="album-cover"><img id="AlbumImage" class="album-img p-4" src="" alt=""></div>
+        <div id="YesMusic" class="col col-lg-6 left">
+          <div class="p-2">
+            <div class="title-light playing pb-0 p-3 m-3 mb-0">
+            <div  class="album-cover"><img id="AlbumImage" class="album-img p-3" src="" alt=""></div>
             <h2 id="Title" class=""></h2>
             <h5 id="Artist" class=""></h5>
+          </div>
+        </div>
         </div>
 
-        <div class="subdiv ml-1 mr-1 pb-5 pt-1">
-          <div class="stat">
-            <h3  class="stat-name pl-5 pt-3">Tempo:</h3>
-            <p class="stat-description pl-5">Beats per minute, aka the songs pace.</p>
-            <div class="progress ml-5 mr-5">
-              <div id="tempo" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%"></div>
-            </div> 
-          </div>
+        <div class="stats col col-lg-6  right">
+          <div class="p-2">
+            <div class="title-light p-3 m-3">
+        <div class="stat">
+          <h3  class="stat-name pl-5 pt-3">Tempo:</h3>
+          <p class="stat-description pl-5">Beats per minute, aka the songs pace.</p>
+          <div class="progress ml-5 mr-5">
+            <div id="tempo" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%"></div>
+          </div> 
+        </div>
 
+        <div class="stat">
+          <h3  class="stat-name pl-5 pt-3">Danceability:</h3>
+          <p class="stat-description pl-5">How suitable a song is for dancing based on tempo, rhythm, beat, and how consistent those are throughout the track.</p>
+          <div class="progress ml-5 mr-5">
+            <div id="dance" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%"></div>
+          </div> 
+        </div>
 
-        <div class="subdiv ml-1 mr-1 pb-5 pt-1">
-          <div class="stat">
-            <h3  class="stat-name pl-5 pt-3">Danceability:</h3>
-            <p class="stat-description pl-5">How suitable a song is for dancing based on tempo, rhythm, beat, and how consistent those are throughout the track.</p>
-            <div class="progress ml-5 mr-5">
-              <div id="dance" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%"></div>
-            </div> 
-          </div>
+        <div  class="stat">
+          <h3  class="stat-name pl-5 pt-3">Energy:</h3>
+          <p class="stat-description pl-5">Percieved intensity and activity. Energetic tracks are fast, loud, and noisey. Attributes that contribute include dynamic range, loudness, timbre, onset rate, and general entropy.</p>
+          <div class="progress ml-5 mr-5">
+            <div id="energy" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
+            </div>
+          </div> 
+        </div>
 
-          <div  class="stat">
-            <h3  class="stat-name pl-5 pt-3">Energy:</h3>
-            <p class="stat-description pl-5">Percieved intensity and activity. Energetic tracks are fast, loud, and noisey. Attributes that contribute include dynamic range, loudness, timbre, onset rate, and general entropy.</p>
-            <div class="progress ml-5 mr-5">
-              <div id="energy" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
-              </div>
-            </div> 
-          </div>
-
-          <div class="stat">
-            <h3  class="stat-name pl-5 pt-3">Valence:</h3>
-            <p class="stat-description pl-5">Valence describes positivity in the track. A track with a high score is more associated with postive feelings, like happiness, while a track with a low score is more associated with negative feelings, like saddness. </p>
-            <div class="progress ml-5 mr-5">
-              <div id="valence" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
-              </div>
-            </div> 
-          </div>
+        <div class="stat">
+          <h3  class="stat-name pl-5 pt-3">Valence:</h3>
+          <p class="stat-description pl-5">Valence describes positivity in the track. A track with a high score is more closely associated with postive feelings like happiness, while a track with a low score is more associated with negative feelings like saddness. </p>
+          <div class="progress ml-5 mr-5">
+            <div id="valence" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
+            </div>
+          </div> 
+        </div>
 
           <div  class="stat">
             <h3 class="stat-name pl-5 pt-3">Acousticness:</h3>
@@ -84,13 +103,17 @@
 
         <div  class="stat">
           <h3  class="stat-name pl-5 pt-3">Loudness:</h3>
-          <p class="stat-description pl-5">How loud the track is. This scale starts around -20dB and goes upto 0dB. Loudness is correlated to physical power of the song, as in amplitude.</p>
-          <div class="progress ml-5 mr-5">
+          <p class="stat-description pl-5 ">How loud the track is. This scale starts around -20dB and goes upto 0dB. Loudness is correlated to physical power of the song, as in amplitude.</p>
+          <div class="progress ml-5 mr-5 mb-3">
             <div id='loud' class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="1000" style="width:10%">
+            </div>
+          </div>
             </div>
           </div> 
         </div>
       </div>
+      </div>
+</div>
               </div>
       <button id="test" class="btn btn-start">GET test</button>
       <button id="analyze" class="btn btn-start2">URI Gets</button>

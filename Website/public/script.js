@@ -166,8 +166,9 @@
           loggedin = true;
           $('#login').hide();
           $('#loggedin').show();
-          $("#NoMusic").hide();
+        //  $("#NoMusic").hide();
           $("#YesMusic").hide();
+          $("#welcome").hide();
           }
       });
       //Establish how many Tracks we need to retrieve
@@ -183,7 +184,7 @@
         $('#login').show();
         $('#loggedin').hide();
         $("#foot").hide();
-
+        $("#welcome").show();
       
     }
 
