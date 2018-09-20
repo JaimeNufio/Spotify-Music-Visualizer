@@ -2,6 +2,8 @@
 
   var loggedin =false;
 
+var col = 0;
+
   var stateKey = 'spotify_auth_state';
   var Tracks = 1000; //data called from library temporary
   var TracksCollect = [];
@@ -17,7 +19,10 @@
     "speechiness":0,
     "tempo":0,
     "danceability":0,
+    "progress":0,
   };
+
+  var CurrentAudioAnalysis={};
 
   var CurrentSong = {
     "uri": "",
@@ -57,20 +62,45 @@
     let colors=["#6626d5","#2689d5","#27d55e","#f4d442","#f44242"];
     let num = (t/max)*1000;
 
-    col = colors[0];
+    let colo = colors[0];
     if (num >250){
-      col = colors[1];
+      colo = colors[1];
     }
     if (num >500){
-      col = colors[2];
+      colo = colors[2];
     }
     if (num >750){
-      col = colors[3];
+      colo = colors[3];
     }
     if (num >850){
-      col = colors[4];
+      colo = colors[4];
     }
-    return col;
+    return colo;
+  }
+
+
+  function dst(a,b){
+    return Math.abs(a-b);
+  }
+
+  function getColorFromRange(t,max){
+    //establish RGB presence as a inverse function of magnitude from certain points
+    //   0    1  2  3  4   5   6
+    // ||RA\ ~\ GA\ ~\ BA\ ~\ RB\|| 
+
+    let step = max/6, center = max/2;
+    let RA = 0, GA = step*2, BA = step*4, RB=max;
+    let R,G,B;
+
+    B = ~~((1-(dst(BA,t)/(step*2))<0?0:1-(dst(BA,t)/(step*2)))*255);
+    G = ~~((1-(dst(GA,t)/(step*2))<0?0:1-(dst(GA,t)/(step*2)))*255);
+    if (t >= center){
+      R = ~~((1-(dst(RB,t)/(step*2))<0?0:1-(dst(RB,t)/(step*2)))*255);
+    }else{
+      R = ~~((1-(dst(RA,t)/(step*2))<0?0:1-(dst(RA,t)/(step*2)))*255);
+    }
+    return "rgb("+R+","+G+","+B+")";
+
   }
 
 /*
@@ -188,6 +218,7 @@
       
     }
 
+
 //Login with Spotify
   document.getElementById('login-button').addEventListener('click', function() {
 
@@ -218,27 +249,38 @@
             'Authorization' : 'Bearer ' + access_token
           },
           success: function(data){
-            let artist = "";
+            if (CurrentSong['uri'] != data['item']['id'] && data['is_playing']){
 
-            for (let i = 0; i<data['item']['artists'].length;i++){
+               let artist = "";
 
-              artist+=data['item']['artists'][i]['name'];
+              for (let i = 0; i<data['item']['artists'].length;i++){
 
-              if(i!=data['item']['artists'].length-1){
-                artist+=",";  
+                artist+=data['item']['artists'][i]['name'];
+
+                if(i!=data['item']['artists'].length-1){
+                  artist+=",";  
+                }
               }
+
+              console.log("song changed");
+              CurrentSong['uri'] = data['item']['id'];
+              CurrentSong['coverArt'] = data['item']['album']['images'][0]['url'];
+              CurrentSong['artistName'] = artist;
+              CurrentSong['SongName'] = data['item']['name'];
+              CurrentSong['playing'] = (data['is_playing']&&data['currently_playing_type']=='track');
             }
-            CurrentSong['uri'] = data['item']['id'];
-            CurrentSong['coverArt'] = data['item']['album']['images'][0]['url'];
-            CurrentSong['artistName'] = artist;
-            CurrentSong['SongName'] = data['item']['name'];
-            CurrentSong['playing'] = (data['is_playing']&&data['currently_playing_type']=='track');
+            if(data['is_playing']){
+              CurrentSong['progress']=data['progress_ms'];
+              console.log(CurrentSong['progress'])
+            }
           },error: function(response){
+            /*
             CurrentSong['uri'] = "";
             CurrentSong['coverArt'] = "";
             CurrentSong['artistName'] = "";
             CurrentSong['SongName'] = "";
             CurrentSong['playing'] = false;
+            */
           },statusCode:{
             500:function(){
             //console.log(CurrentSong);
@@ -286,6 +328,8 @@
         CurrentSongStats['acousticness']=0;
         CurrentSongStats['tempo']=0;
       }//*/
+        //console.log(getColorFromRange(1000,1000));
+
         $('#dance').css('width', CurrentSongStats['danceability']/10+'%').attr('aria-valuenow', CurrentSongStats['danceability']);
         $('#dance').css('background-color',moodColor(CurrentSongStats['danceability'],1000));
         $('#energy').css('width', CurrentSongStats['energy']/10+'%').attr('aria-valuenow', CurrentSongStats['energy']);
@@ -300,7 +344,14 @@
         $('#tempo').css('background-color',moodColor(CurrentSongStats['tempo'],1000));
    //  $("#foot").show();
     //console.log(CurrentSongStats);
-   }}, 900);
+      col+=10;
+      if(col>1000){
+        col=0;
+      }
+      console.log(col);//getColorFromRange(col,1000));
+      $("#headline").css('background-color',getColorFromRange(col,1000));
+
+   }}, 160);
 	
 //Collect songs from USER LIBRARY
 //TODO: Write versions for Album, Playlists, and Individual Songs (Next: Current Song)
