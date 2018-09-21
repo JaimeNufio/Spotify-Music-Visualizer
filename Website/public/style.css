@@ -33,6 +33,14 @@ body {
 	display: hidden !important;
 }
 
+.palette{
+	width: 20px;
+	height: 20px;
+	margin: 1vw;
+	
+	float:left;
+}
+
 .footer {
     height: 100px; 
     width: 95%; 

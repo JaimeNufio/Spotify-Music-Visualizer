@@ -2,7 +2,7 @@
 
   var loggedin =false;
 
-var col = 0;
+var col = 950;
 
   var stateKey = 'spotify_auth_state';
   var Tracks = 1000; //data called from library temporary
@@ -83,25 +83,49 @@ var col = 0;
     return Math.abs(a-b);
   }
 
-  function getColorFromRange(t,max){
-    //establish RGB presence as a inverse function of magnitude from certain points
-    //   0    1  2  3  4   5   6
-    // ||RA\ ~\ GA\ ~\ BA\ ~\ RB\|| 
 
-    let step = max/6, center = max/2;
-    let RA = 0, GA = step*2, BA = step*4, RB=max;
-    let R,G,B;
-
-    B = ~~((1-(dst(BA,t)/(step*2))<0?0:1-(dst(BA,t)/(step*2)))*255);
-    G = ~~((1-(dst(GA,t)/(step*2))<0?0:1-(dst(GA,t)/(step*2)))*255);
-    if (t >= center){
-      R = ~~((1-(dst(RB,t)/(step*2))<0?0:1-(dst(RB,t)/(step*2)))*255);
-    }else{
-      R = ~~((1-(dst(RA,t)/(step*2))<0?0:1-(dst(RA,t)/(step*2)))*255);
-    }
-    return "rgb("+R+","+G+","+B+")";
-
+  function getColorFromRange(t,max,sat,lit){
+    if (arguments.length == 2){
+      let p1=50,p2=50;
+      return "hsl("+(360*(t/max))+","+p1+"%,"+p2+"%)";
+    } 
+    return "hsl("+(360*(t/max))+","+sat*100+"%,"+lit*100+"%)";
   }
+
+  function getCompliment(t, max){
+    return getColorFromRange((t+(max/2))%max,max);
+  }
+
+  function getTriad(t,max){
+    let pair = [];
+    pair.push(getColorFromRange(t,max));
+    for (let i =1;i<3;i++){
+      pair.push(getColorFromRange((t+(max/3)*i)%max,max));
+    }
+
+    return pair;
+  }
+
+  function getPalette(t,max,tether,count){
+    let pair = [];
+    pair.push(getColorFromRange(t,max));
+    tether*=90,
+    upper=.4,
+    lower=.7;
+    for (let i =0; i<~~(count/2);i++){
+      pair.push(getColorFromRange((t-(tether*i))%max,max,
+        Math.random()*(upper-lower)+lower,
+        Math.random()*(upper-lower)+lower));
+    }
+    for (let i =~~(count/2); i<count;i++){
+      pair.push(getColorFromRange((t+(tether*i))%max,max,
+        Math.random()*(upper-lower)+lower,
+        Math.random()*(upper-lower)+lower));
+    }
+    return pair;
+  }
+
+
 
 /*
   for(let i =0;i<1000;i+=10){
@@ -241,6 +265,23 @@ var col = 0;
 
   }, false);
 
+setInterval(function(){
+
+
+  col=col+10>1000?0:col+10;
+
+ // $("#0").css("background-color",getColorFromRange(col,1000));
+ // $("#1").css("background-color",getCompliment(col,1000));
+
+  let set=getPalette(col,1000,.7,4);
+  console.log("Percent: "+(col/1000)*100);
+  for (let i = 0; i<8; i++){
+    //console.log(set[i])
+    $("#"+i).css("background-color",set[i]);
+  }
+
+},500)
+
     setInterval(function(){ if(loggedin){
       $.ajax({
           url: 'https://api.spotify.com/v1/me/player/currently-playing',
@@ -344,13 +385,6 @@ var col = 0;
         $('#tempo').css('background-color',moodColor(CurrentSongStats['tempo'],1000));
    //  $("#foot").show();
     //console.log(CurrentSongStats);
-      col+=10;
-      if(col>1000){
-        col=0;
-      }
-      console.log(col);//getColorFromRange(col,1000));
-      $("#headline").css('background-color',getColorFromRange(col,1000));
-
    }}, 160);
 	
 //Collect songs from USER LIBRARY
