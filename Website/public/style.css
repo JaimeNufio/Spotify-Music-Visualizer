@@ -1,26 +1,54 @@
+/*
+#1db954	(29,185,84)
+#212121	(33,33,33)
+#121212	(18,18,18)
+#535353	(83,83,83)
+#b3b3b3	(179,179,179)
+*/
+
+canvas{
+   left:0;
+   top:0;
+   z-index:-1;
+ /*  border-style: solid;
+   border-color: red;*/
+     position:fixed;
+}
+
+:root {
+    --Green: #1db954;
+    --Black: #121212;
+    --DarkGray: #212121;
+    --Gray:#535353; 
+    --LightGray: #b3b3b3;
+}
+
 html { position: relative; min-height: 100%; }
 
 body {
-  margin-bottom: 100px; /* Margin bottom by footer height */
-  background-color: #191919;
+  margin-bottom: 200px; /* Margin bottom by footer height */
+  background-color: var(--DarkGray);
   color:#FFF;
   font-size: 1em;
   font-family: 'Merriweather', serif;
 }
 
+h1{
+	font-size: calc(20px + 5vw);
+}
+
+.lead{
+	font-size: calc(20px +3vw);
+}
+
 #Artist{
 	width: 100%;
-
 	display: block;
-
-	/*height: 4vw;*/
-	
+	/*height: 4vw;*/	
 }
 
 #Title{
-	
 	width: 100%;
-
 	display: block;
 	/*overflow: wrap;*/
 }
@@ -41,19 +69,18 @@ body {
 	float:left;*/
 }
 
-.footer {
-    height: 100px; 
-    width: 95%; 
+footer {
+    height: calc(10vw + 100px); 
+    width: 100vw; 
     background-image: none;
     background-repeat: repeat;
     background-attachment: scroll;
     background-position: 0% 0%;
-    background-color: #67686a;
+    background-color: transparent;
     position: fixed;
     bottom: 0pt;
     left: 0pt;
-    display: hidden;
-    border-radius: 50px;
+    display: block;
 }
 
 .album-current{
@@ -90,12 +117,19 @@ body {
 
 }
 
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: calc(0px + 5vw) !important;
+}
+
 .title{
 	line-height: 1.6em;
 	text-align:center;
-	display: block;
+	text-shadow: 2px 2px #000;
+	/*display: block;
 	background-color: #27282b;
-	border-radius: 25px;
+	border-radius: 25px;*/
 }
 
 .title-light{
@@ -108,9 +142,6 @@ body {
 	padding-right: 1vw;
 }
 
-.lead{
-	font-size: 1.05em;
-}
 
 .subdiv{
 	line-height: 1.6em;
@@ -139,26 +170,25 @@ body {
 }
 
 .btn {
-	background-color: transparent;
+	background: transparent;
 	border-radius: 2em;
-	border: 0.2em solid #1ecd97;
-	color: #1ecd97;
+	border: 0.2em solid var(--Green);
+	color: var(--Green);
 	cursor: pointer;
-	font-size: 1.3em;
-	padding: 0.7em 1.5em;
+	font-size: calc(20px + .5vw);
+	padding: 0.5em 1.5em;
 	text-transform: uppercase;
 	transition: all 0.25s ease;
 }
 
 .btn:hover {
-	background: #1ecd97;
-	color: #333;
+	background: var(--Green);
+	color: var(--Black);
 }
 
 .btn-login {
 	display: block;
-	margin:auto;
-  /*margin: 0 auto;*/
+ 	padding-bottom: 10px;	
 }
 
 #login, #loggedin {

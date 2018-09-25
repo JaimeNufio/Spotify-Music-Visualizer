@@ -1,0 +1,62 @@
+:root {
+    --Green:#1db954;
+    --DarkGrey:#212121;
+    --Black:#121212;
+    --Grey:#535353;
+    --LightGrey:#b3b3b3;
+    --White:#f9f9f9;
+}
+
+html { position: relative; min-height: 100%; font-family: 'Montserrat', sans-serif !important;}
+
+body {
+  /*margin-bottom: 100px; Margin bottom by footer height */
+  background-color: var(--Black);
+  color:var(--White);
+  font-size: 1em;
+  font-family: 'Merriweather', serif;
+  
+}
+
+h1{
+	font-size: 10vw;
+	text-align: center;
+}
+
+
+.heading{
+	margin: 5px;
+	padding: 2px 0px;
+	background-color: var(--DarkGrey);
+	border-bottom-right-radius: 25px;
+	border-color: var(--White);
+	border-width: 2px;
+	border-style: solid;
+	border-left-width: 0px;
+	border-top-width: 0px;
+
+}
+
+
+.btn {
+	background-color: transparent;
+	border-radius: 2em;
+	border: 0.2em solid #1ecd97;
+	color: #1ecd97;
+	cursor: pointer;
+	font-size: 1.3em;
+	padding: 0.7em 1.5em;
+	text-transform: uppercase;
+	transition: all 0.25s ease;
+}
+
+.btn:hover {
+	background: #1ecd97;
+	color: #333;
+}
+
+.btn-login {
+	display: block;
+	margin:auto;
+  /*margin: 0 auto;*/
+}
