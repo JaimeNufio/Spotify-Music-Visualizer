@@ -18,9 +18,10 @@
 
     <div style="height:200%; "></div>
 
+
       <div id="welcome" class="title pb-3">
         <h1 class="pt-5 pb-3">Spotify Statistics</h1>
-        <p class="lead">Understand the underlying statistics that define how Spotify's algorithims interpret your music, and what they might say about you. Using Spotify's API, we'll average values of your library's music and learn the quantitative aspects of your saved.</p>
+        <p class="lead">Understand the underlying statistics that define how Spotify's algorithims interpret your music, and what they might say about you. Using Spotify's API, we'll average values of your library's music and learn the quantitative aspects of your saved music.</p>
 
         <div id="0" class="palette"></div>
         <div id="1" class="palette"></div>
@@ -37,11 +38,13 @@
       <div id="loggedin" class ="">
        <div class="title mt-3 mb-3 pt-3">
 
+<!--
         <div class="">
           <div class='title-light p-2 m-3'>
             <h1 id='headline' class="p-3">Track Attributes</h1>
           </div>
         </div>
+      -->
      
           <div class="row mt-0">
             <div id="NoMusic" class="col col-lg-6 left">
@@ -63,6 +66,11 @@
                 <h2 id="Title" class=""></h2>
                 <h5 id="Artist" class=""></h5>
               </div>
+                <div id="debug" style = "display: hidden">
+                  <button id="test" class="btn btn-start">GET test</button>
+                  <button id="analyze" class="btn btn-start2">URI Gets</button>
+                  <button id="averages" class="btn btn-start3">Average</button>
+                </div>
             </div>
             </div>
 
@@ -125,9 +133,6 @@
               </div>
         </div>
           </div>
-        <button id="test" class="btn btn-start">GET test</button>
-        <button id="analyze" class="btn btn-start2">URI Gets</button>
-        <button id="averages" class="btn btn-start3">Average</button>
       </div>
 
     </main>  

@@ -136,7 +136,7 @@ footer {
 	line-height: 1.6em;
 	text-align:center;
 	display: block;
-	background-color: #191919;
+	background-color: rgba(25,25,25,0.8);/*#191919;*/
 	border-radius: 25px;
 	padding-left:1vw;
 	padding-right: 1vw;

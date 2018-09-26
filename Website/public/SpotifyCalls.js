@@ -104,7 +104,7 @@ var col = 950;
           success: function(response) {
            // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
           loggedin = true;
-                  $("#foot").hide();
+          $("#foot").hide();
           $('#login').hide();
           $('#loggedin').show();
         //  $("#NoMusic").hide();
@@ -156,6 +156,7 @@ var col = 950;
 
 
     setInterval(function(){ if(loggedin){
+
       $.ajax({
           url: 'https://api.spotify.com/v1/me/player/currently-playing',
           type: 'GET',
@@ -185,7 +186,7 @@ var col = 950;
             }
             if(data['is_playing']){
               CurrentSong['progress']=data['progress_ms'];
-              console.log(CurrentSong['progress'])
+             // console.log(CurrentSong['progress'])
             }
           },error: function(response){
             /*
@@ -234,6 +235,7 @@ var col = 950;
       }else{
         $("#NoMusic").show();
         $("#YesMusic").hide();
+        $("#debug").hide();
         CurrentSongStats['valence']=0;
         CurrentSongStats['speechiness']=0;
         CurrentSongStats['danceability']=0;
@@ -241,6 +243,7 @@ var col = 950;
         CurrentSongStats['loudness']=0;
         CurrentSongStats['acousticness']=0;
         CurrentSongStats['tempo']=0;
+        speed = 0*ctx.canvas.width;
       }//*/
         //console.log(getColorFromRange(1000,1000));
 
@@ -256,6 +259,14 @@ var col = 950;
         $('#loud').css('background-color',moodColor(CurrentSongStats['loudness'],1000));
         $('#tempo').css('width', CurrentSongStats['tempo']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
         $('#tempo').css('background-color',moodColor(CurrentSongStats['tempo'],1000));
+
+        if (CurrentSongStats['tempo']>0){
+          ampMax = (CurrentSongStats['energy']/10);
+          speed = (CurrentSongStats['tempo']/5000)*ctx.canvas.width;
+          spd2 = CurrentSongStats['energy']/500;
+          freq = CurrentSongStats['energy']/200;
+        }
+
    //  $("#foot").show();
     //console.log(CurrentSongStats);
    }}, 160);
@@ -279,8 +290,8 @@ var col = 950;
 				success: function(data){
           for (let j = 0; j<data['items'].length;j++){
           //  console.log("FUCK");
-            console.log(data['items'][j]['track']['name']);// console.log(i); 
-            TracksCollect.push(data['items'][j]['track'])
+           //** console.log(data['items'][j]['track']['name']);// console.log(i); 
+           //*** TracksCollect.push(data['items'][j]['track'])
             count++;
           }
 
