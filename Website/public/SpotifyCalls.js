@@ -1,3 +1,24 @@
+  var CurrentSong = {
+    "uri": "",
+    "coverArt": "",
+    "artistName": "",
+    "SongName": "",
+    "playing":"",
+    "valence":0,
+    "instrumentalness":0,
+    "energy":0,
+    "acousticness":0,
+    "loudness":0,
+    "mode":0,
+    "speechiness":0,
+    "tempo":0,
+    "danceability":0,
+    "progress":0,
+    "trueLoudness":0,
+    "segments":[],
+    "amplitudeMod":0,
+  };
+
 (function() {
 
   var loggedin =false;
@@ -9,28 +30,7 @@ var col = 950;
   var TracksCollect = [];
   var DumpAttributes = [];
 
-  var CurrentSongStats = {
-    "valence":0,
-    "instrumentalness":0,
-    "energy":0,
-    "acousticness":0,
-    "loudness":0,
-    "mode":0,
-    "speechiness":0,
-    "tempo":0,
-    "danceability":0,
-    "progress":0,
-  };
-
-  var CurrentAudioAnalysis={};
-
-  var CurrentSong = {
-    "uri": "",
-    "coverArt": "",
-    "artistName": "",
-    "SongName": "",
-    "playing":"",
-  };
+ var CurrSegment={};
 
   var averages = {
     "valence":0,
@@ -134,7 +134,7 @@ var col = 950;
   document.getElementById('login-button').addEventListener('click', function() {
 
     var client_id = 'e80925f0ded1400d9e4a8c2ac9c7f449'; // Your client id
-    var redirect_uri = "http://localhost:5000"
+    var redirect_uri = "http://www.spotifystats.com/"//"http://localhost:5000"
     //'http://www.spotifystats.com/'; // Your redirect uri
 
     var state = generateRandomString(16);
@@ -153,9 +153,48 @@ var col = 950;
 
   }, false);
 
+//keep a global memory of where the last 
+var lastIndex = 0;
+function searchForNext(items,time){
+ // for (let i = 0; i<items.length; i++){
+   //console.log(items[i])
+ // }
+ //console.log('serch')
+  for (let i = lastIndex; i<items.length;i++){
+    //console.log(i)
+   // console.log(items[i]);
+  // console.log(time)
+   // console.log(items[i])
+   //console.log(items[i]['start']);
+// console.log(CurrentSong['progress'])
+   if (items[i]['start'] >= CurrentSong['progress']-25){
+      lastIndex = i;
+     // console.log(items[i]);
+      CurrSegment=items[i];
+      let effective = ((items[i]['loudness_max']-CurrentSong['trueLoudness'])/CurrentSong['trueLoudness']);
+      CurrentSong['amplitudeMod'] = effective;
+      console.log(effective);//(items[i]['loudness_max']-(CurrentSong['trueLoudness']/1000))/(CurrentSong['trueLoudness']/1000))
+       // $('#loud').css('width', (500*(effective+1))/1000+'%').attr('aria-valuenow', 500*(effective+1) ); 
+      //searchForImportant(items[i]['pitches']);
+      break;
+    }
+  }
+  //console.log('searched')
+}
+
+function searchForImportant(items){
+  let found = [];
+  for (let i = 0; i<items.length;i++){
+    if (items[i] > .85){
+      found.push(i);
+    }
+  }
+  console.log(found);
+}
 
 
-    setInterval(function(){ if(loggedin){
+//the loop that must run to get updated information on music
+setInterval(function(){ if(loggedin){
 
       $.ajax({
           url: 'https://api.spotify.com/v1/me/player/currently-playing',
@@ -164,6 +203,7 @@ var col = 950;
             'Authorization' : 'Bearer ' + access_token
           },
           success: function(data){
+
             if (CurrentSong['uri'] != data['item']['id'] && data['is_playing']){
 
                let artist = "";
@@ -178,15 +218,32 @@ var col = 950;
               }
 
               console.log("song changed");
+              lastIndex=0;
               CurrentSong['uri'] = data['item']['id'];
               CurrentSong['coverArt'] = data['item']['album']['images'][0]['url'];
               CurrentSong['artistName'] = artist;
               CurrentSong['SongName'] = data['item']['name'];
               CurrentSong['playing'] = (data['is_playing']&&data['currently_playing_type']=='track');
+              //Analysis
+               $.ajax({
+                url: "https://api.spotify.com/v1/audio-analysis/"+CurrentSong['uri'],
+                type: 'GET',
+                headers: { 
+                  'Authorization' : 'Bearer ' + access_token
+                },
+                success: function(data){
+                  //console.log(data)
+                  CurrentSong['segments']=data['segments'];
+                //  console.log(CurrentSong['segments'])
+                console.log(data['loudness'])
+                } 
+              });
             }
             if(data['is_playing']){
-              CurrentSong['progress']=data['progress_ms'];
              // console.log(CurrentSong['progress'])
+              CurrentSong['progress'] = data["progress_ms"]/1000;
+              searchForNext(CurrentSong['segments'],CurrentSong['progress'])
+
             }
           },error: function(response){
             /*
@@ -205,13 +262,13 @@ var col = 950;
       ///*
 
       if (CurrentSong['playing']){
-
         $("#Title").html(CurrentSong['SongName']);
         $("#Artist").html(CurrentSong['artistName']);
         $("#AlbumImage").attr("src",CurrentSong['coverArt']);
         $("#NoMusic").hide();
         $("#YesMusic").show();
 
+        //Features
          $.ajax({
           url: "https://api.spotify.com/v1/audio-features/"+CurrentSong['uri'],
           type: 'GET',
@@ -219,57 +276,58 @@ var col = 950;
             'Authorization' : 'Bearer ' + access_token
           },
           success: function(data){
-          //  CurrentSongStats['instrumentalness']=data['instrumentalness'];
-            CurrentSongStats['valence']=data['valence']*1000;
-            CurrentSongStats['acousticness']=data['acousticness']*1000;
-           // CurrentSongStats['loudness']=data['loudness'];
-            CurrentSongStats['danceability']=data['danceability']*1000;
-            CurrentSongStats['energy']=data['energy']*1000;
-            CurrentSongStats['tempo']=(data['tempo']/200)*1000;
-            CurrentSongStats['loudness']=((data['loudness']+20)/20)*1000;
+          //  CurrentSong['instrumentalness']=data['instrumentalness'];
+            CurrentSong['valence']=data['valence']*1000;
+            CurrentSong['acousticness']=data['acousticness']*1000;
+           // CurrentSong['loudness']=data['loudness'];
+            CurrentSong['danceability']=data['danceability']*1000;
+            CurrentSong['energy']=data['energy']*1000;
+            CurrentSong['tempo']=(data['tempo']/200)*1000;
+            CurrentSong['loudness']=((data['loudness']+20)/20)*1000;
+            CurrentSong['trueLoudness']=data['loudness'];
            // console.log("Loudness:"+(data['speechiness']));
           } 
         });
-         // console.log(CurrentSongStats)
+         // console.log(CurrentSong)
         
       }else{
         $("#NoMusic").show();
         $("#YesMusic").hide();
         $("#debug").hide();
-        CurrentSongStats['valence']=0;
-        CurrentSongStats['speechiness']=0;
-        CurrentSongStats['danceability']=0;
-        CurrentSongStats['energy']=0;
-        CurrentSongStats['loudness']=0;
-        CurrentSongStats['acousticness']=0;
-        CurrentSongStats['tempo']=0;
+        CurrentSong['valence']=0;
+        CurrentSong['speechiness']=0;
+        CurrentSong['danceability']=0;
+        CurrentSong['energy']=0;
+        CurrentSong['loudness']=0;
+        CurrentSong['acousticness']=0;
+        CurrentSong['tempo']=0;
         speed = 0*ctx.canvas.width;
       }//*/
         //console.log(getColorFromRange(1000,1000));
 
-        $('#dance').css('width', CurrentSongStats['danceability']/10+'%').attr('aria-valuenow', CurrentSongStats['danceability']);
-        $('#dance').css('background-color',moodColor(CurrentSongStats['danceability'],1000));
-        $('#energy').css('width', CurrentSongStats['energy']/10+'%').attr('aria-valuenow', CurrentSongStats['energy']);
-        $('#energy').css('background-color',moodColor(CurrentSongStats['energy'],1000));
-        $('#valence').css('width', CurrentSongStats['valence']/10+'%').attr('aria-valuenow', CurrentSongStats['valence']);
-        $('#valence').css('background-color',moodColor(CurrentSongStats['valence'],1000));
-        $('#acousticness').css('width', CurrentSongStats['acousticness']/10+'%').attr('aria-valuenow', CurrentSongStats['acousticness']);
-        $('#acousticness').css('background-color',moodColor(CurrentSongStats['acousticness'],1000));
-        $('#loud').css('width', CurrentSongStats['loudness']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
-        $('#loud').css('background-color',moodColor(CurrentSongStats['loudness'],1000));
-        $('#tempo').css('width', CurrentSongStats['tempo']/10+'%').attr('aria-valuenow', CurrentSongStats['loudness']); 
-        $('#tempo').css('background-color',moodColor(CurrentSongStats['tempo'],1000));
+        $('#dance').css('width', CurrentSong['danceability']/10+'%').attr('aria-valuenow', CurrentSong['danceability']);
+        $('#dance').css('background-color',moodColor(CurrentSong['danceability'],1000));
+        $('#energy').css('width', CurrentSong['energy']/10+'%').attr('aria-valuenow', CurrentSong['energy']);
+        $('#energy').css('background-color',moodColor(CurrentSong['energy'],1000));
+        $('#valence').css('width', CurrentSong['valence']/10+'%').attr('aria-valuenow', CurrentSong['valence']);
+        $('#valence').css('background-color',moodColor(CurrentSong['valence'],1000));
+        $('#acousticness').css('width', CurrentSong['acousticness']/10+'%').attr('aria-valuenow', CurrentSong['acousticness']);
+        $('#acousticness').css('background-color',moodColor(CurrentSong['acousticness'],1000));
+        $('#loud').css('width', CurrentSong['loudness']/10+'%').attr('aria-valuenow', CurrentSong['loudness']); 
+        $('#loud').css('background-color',moodColor(CurrentSong['loudness'],1000));
+        $('#tempo').css('width', CurrentSong['tempo']/10+'%').attr('aria-valuenow', CurrentSong['loudness']); 
+        $('#tempo').css('background-color',moodColor(CurrentSong['tempo'],1000));
 
-        if (CurrentSongStats['tempo']>0){
-          ampMax = (CurrentSongStats['energy']/10);
-          speed = (CurrentSongStats['tempo']/5000)*ctx.canvas.width;
-          spd2 = CurrentSongStats['energy']/500;
-          freq = CurrentSongStats['energy']/200;
+        if (CurrentSong['tempo']>0){
+          ampMax = (CurrentSong['energy']/10);
+          speed = (CurrentSong['tempo']/5000)*ctx.canvas.width;
+          spd2 = CurrentSong['energy']/500;
+          freq = CurrentSong['energy']/200;
         }
 
    //  $("#foot").show();
-    //console.log(CurrentSongStats);
-   }}, 160);
+    //console.log(CurrentSong);
+   }}, 200);
 	
 //Collect songs from USER LIBRARY
 //TODO: Write versions for Album, Playlists, and Individual Songs (Next: Current Song)

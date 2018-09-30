@@ -17,7 +17,7 @@
     return str;
   }
 
-
+/*
 setInterval(function(){
 
 
@@ -34,6 +34,7 @@ setInterval(function(){
   }
 
 },500)
+*/
 
   $('#tempo').css('background-color','rgb(64,178,60)');
   $('#dance').css('background-color','rgb(64,178,60)');
