@@ -134,7 +134,7 @@ var col = 950;
   document.getElementById('login-button').addEventListener('click', function() {
 
     var client_id = 'e80925f0ded1400d9e4a8c2ac9c7f449'; // Your client id
-    var redirect_uri = "http://www.spotifystats.com/"//"http://localhost:5000"
+    var redirect_uri = "http://localhost:5000"//"http://www.spotifystats.com/"//
     //'http://www.spotifystats.com/'; // Your redirect uri
 
     var state = generateRandomString(16);
