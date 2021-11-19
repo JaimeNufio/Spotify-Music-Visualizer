@@ -24,5 +24,7 @@ cd into public:
 
 Should run on `localhost:5000`
 
+## Technology:
 
+NodeJs, Javascript, HTML5
 
